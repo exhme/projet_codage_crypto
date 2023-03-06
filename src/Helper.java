@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,25 +11,61 @@ public class Helper {
         for (int i = 1; i<alphabet.length+1;i++){
             CONVERT_MAP.put(alphabet[i-1],i);
         }
-
-
-
-
-
     }
-
-
-    public int[] strToInt(String str){
-        int[] sortie = new int[str.length()];
-        System.out.println("taille : "+sortie.length);
+    public ArrayList<Integer> strToInt(String str){
+        ArrayList<Integer> sortie = new ArrayList<>();
         char[] chars = str.toCharArray();
-        for (int i=0;i<chars.length;i++){
-            sortie[i] = CONVERT_MAP.get(chars[i]);
+        for (char ch : chars){
+            sortie.add(CONVERT_MAP.get(ch));
         }
         return sortie;
     }
 
     public Map<Character, Integer> getCONVERT_MAP() {
         return CONVERT_MAP;
+    }
+
+
+    public ArrayList<Carte> buildAllCard(){
+        ArrayList<Carte> cartes = new ArrayList<>();
+        for (FormeEnum forme : FormeEnum.values()) {
+            CouleurEnum couleur;
+            if (forme.equals(FormeEnum.TREFLE) || forme.equals(FormeEnum.PIC)){
+                couleur = CouleurEnum.NOIR;
+            }
+            else{
+                couleur = CouleurEnum.ROUGE;
+            }
+            for (int value =1; value <=13 ;value++ ){
+                Carte carte;
+                if (value <10){
+                    carte = new Carte(new Valeur(false,value),forme,couleur,false);
+
+                }
+                else {
+                    TeteEnum tete;
+                    switch (value){
+                        case 11:
+                            tete = TeteEnum.VALET;
+                            break;
+                        case 12:
+                            tete = TeteEnum.DAME;
+                            break;
+                        case 13:
+                            tete = TeteEnum.ROI;
+                            break;
+
+                        default:
+                            tete = TeteEnum.RIEN;
+                    }
+                    carte = new Carte(new Valeur(true,value,tete),forme,couleur,false);
+                }
+                cartes.add(carte);
+            }
+        }
+
+
+
+        return cartes;
     }
 }
