@@ -26,8 +26,9 @@ public class Helper {
     }
 
 
-    public ArrayList<Carte> buildAllCard(){
-        ArrayList<Carte> cartes = new ArrayList<>();
+    public HashMap<Integer,Carte> buildAllCard(){
+        HashMap<Integer,Carte> cartes = new HashMap<>();
+        int position = 0;
         for (FormeEnum forme : FormeEnum.values()) {
             CouleurEnum couleur;
             if (forme.equals(FormeEnum.TREFLE) || forme.equals(FormeEnum.PIC)){
@@ -60,10 +61,11 @@ public class Helper {
                     }
                     carte = new Carte(new Valeur(true,value,tete),forme,couleur,false);
                 }
-                cartes.add(carte);
+                cartes.put(position++,carte);
             }
         }
-
+        cartes.put(position++,new Carte(CouleurEnum.NOIR, true));
+        cartes.put(position++,new Carte(CouleurEnum.ROUGE, true));
 
 
         return cartes;

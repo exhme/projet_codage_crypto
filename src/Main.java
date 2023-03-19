@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Main {
@@ -7,7 +8,9 @@ public class Main {
         Helper helper = new Helper();
         System.out.println(helper.getCONVERT_MAP());
         ArrayList<Integer> messageEnInt = helper.strToInt("bonjour");
-        ArrayList<Carte> cards = helper.buildAllCard();
+        HashMap<Integer,Carte> cards = helper.buildAllCard();
+
+        
     }
 
 
