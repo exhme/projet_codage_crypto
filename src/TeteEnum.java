@@ -1,3 +1,3 @@
 public enum TeteEnum {
-    VALET,DAME,ROI,RIEN
+    VALET, DAME, ROI, RIEN
 }

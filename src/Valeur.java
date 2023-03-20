@@ -7,13 +7,14 @@ public class Valeur {
         this.isTete = isTete;
         this.value = value;
     }
+
     public Valeur(boolean isTete, int value, TeteEnum teteEnum) {
         this.isTete = isTete;
         this.value = value;
         this.teteEnum = teteEnum;
     }
 
-    public Valeur(){
+    public Valeur() {
 
     }
 }

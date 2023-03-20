@@ -1,3 +1,3 @@
 public enum CouleurEnum {
-    ROUGE,NOIR
+    ROUGE, NOIR
 }

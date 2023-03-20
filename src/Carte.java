@@ -10,7 +10,8 @@ public class Carte {
         this.couleurEnum = couleurEnum;
         this.joker = joker;
     }
-    public Carte(CouleurEnum couleur, boolean joker){
+
+    public Carte(CouleurEnum couleur, boolean joker) {
         this.couleurEnum = couleur;
         this.joker = joker;
     }
