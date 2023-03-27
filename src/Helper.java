@@ -1,6 +1,7 @@
 import Enums.CouleurEnum;
 import Enums.FormeEnum;
 import Enums.TeteEnum;
+import com.sun.tools.javac.tree.JCTree;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,6 +81,7 @@ public class Helper {
 
     public ArrayList<Integer> generatekeyFlow(int length, ArrayList<Carte> cards) {
         ArrayList<Carte> cardJoker = reculJoker(cards);
+        ArrayList<Carte> cardJokerSlice = sliceFromJoker(cards);
         return null;
     }
 
@@ -102,6 +104,45 @@ public class Helper {
 
             }
         }
+        return cards;
+    }
+
+    public ArrayList<Carte> sliceFromJoker(ArrayList<Carte> cards){
+
+        //get pos of joker
+        ArrayList<Integer> jokerIndexes = new ArrayList<Integer>();
+        for (int i = 0; i<cards.size();i++){
+            if (cards.get(i).isJoker()){
+                   jokerIndexes.add(i);
+            }
+
+        }
+
+        ArrayList<Carte> croppedCardsList = new ArrayList<Carte>(cards);
+
+
+        ArrayList<Carte> beforeFirstJoker = new ArrayList<Carte>();
+        for (int i = 0; i<jokerIndexes.get(0);i++){
+            beforeFirstJoker.add(cards.get(i));
+        }
+        ArrayList<Carte> afterSecondJoker = new ArrayList<Carte>();
+        for (int i = jokerIndexes.get(1)+1; i<cards.size();i++){
+            afterSecondJoker.add(cards.get(i));
+        }
+        croppedCardsList.removeAll(beforeFirstJoker);
+        croppedCardsList.removeAll(afterSecondJoker);
+
+        croppedCardsList.addAll(beforeFirstJoker);
+        croppedCardsList.addAll(0,afterSecondJoker);
+
+
+
+
+
+
+
+
+
         return cards;
     }
 }
