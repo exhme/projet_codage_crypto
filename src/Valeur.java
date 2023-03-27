@@ -1,3 +1,5 @@
+import Enums.TeteEnum;
+
 public class Valeur {
     boolean isTete;
     int value;

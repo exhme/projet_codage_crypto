@@ -1,3 +1,6 @@
+import Enums.CouleurEnum;
+import Enums.FormeEnum;
+
 public class Carte {
     public int id;
     private Valeur valeur;
