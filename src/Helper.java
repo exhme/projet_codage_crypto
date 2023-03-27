@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,17 +80,22 @@ public class Helper {
     }
 
 
-    public ArrayList<Carte> reculJoker(ArrayList<Carte> cards) {
-        boolean noirTrigger =
-        for (int i = 0; i<cards.size();i++) {
-            if (cards.get(i).isJoker()){
-                if (cards.get(i).getCouleurEnum().equals(CouleurEnum.NOIR)){
-                    Collections.swap(cards,i,i+1);
-
-                } else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE)) {
-                    Collections.swap(cards,i,i+2);
-
+    public ArrayList<Carte> reculJoker(ArrayList<Carte> cards){
+        boolean noirTrigger = false;
+        boolean rougeTrigger = false;
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).isJoker()) {
+                if (cards.get(i).getCouleurEnum().equals(CouleurEnum.NOIR) && !noirTrigger) {
+                    Collections.swap(cards, i, (i+1)%cards.size());
+                    noirTrigger = true;
                 }
+
+                else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE) && !rougeTrigger) {
+                    Collections.swap(cards, i, (i+2)%cards.size());
+                    rougeTrigger = true;
+                }
+
+
             }
         }
         return cards;
