@@ -1,6 +1,4 @@
-import Enums.CouleurEnum;
-import Enums.FormeEnum;
-import Enums.TeteEnum;
+import Enums.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Helper {
-    private Map<Character, Integer> CONVERT_MAP;
+    private final Map<Character, Integer> CONVERT_MAP;
 
     public Helper() {
         CONVERT_MAP = new HashMap<>();
@@ -77,9 +75,9 @@ public class Helper {
         return cartes;
     }
 
-
     public ArrayList<Integer> generatekeyFlow(int length, ArrayList<Carte> cards) {
         ArrayList<Carte> cardJoker = reculJoker(cards);
+        ArrayList<Carte> cardPseudoAlea = pseudoAlea(cardJoker);
         return null;
     }
 
@@ -102,6 +100,18 @@ public class Helper {
 
             }
         }
+        return cards;
+    }
+
+    public ArrayList<Carte> pseudoAlea(ArrayList<Carte> cards) {
+        int indexFirstCard = 0;
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).getId() == 1) {
+                indexFirstCard = i;
+                break;
+            }
+        }
+        System.out.println(indexFirstCard);
         return cards;
     }
 }
