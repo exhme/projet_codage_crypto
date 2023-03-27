@@ -1,4 +1,6 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,14 +24,15 @@ public class Helper {
         return sortie;
     }
 
+
     public Map<Character, Integer> getCONVERT_MAP() {
         return CONVERT_MAP;
     }
 
 
-    public HashMap<Integer, Carte> buildAllCard() {
-        HashMap<Integer, Carte> cartes = new HashMap<>();
-        int position = 0;
+    public ArrayList<Carte> buildAllCard() {
+        ArrayList<Carte> cartes = new ArrayList<>();
+        int position = 1;
         for (FormeEnum forme : FormeEnum.values()) {
             CouleurEnum couleur;
             if (forme.equals(FormeEnum.TREFLE) || forme.equals(FormeEnum.PIC)) {
@@ -40,7 +43,7 @@ public class Helper {
             for (int value = 1; value <= 13; value++) {
                 Carte carte;
                 if (value < 10) {
-                    carte = new Carte(new Valeur(false, value), forme, couleur, false);
+                    carte = new Carte(new Valeur(false, value), forme, couleur, false, position);
 
                 } else {
                     TeteEnum tete;
@@ -58,15 +61,39 @@ public class Helper {
                         default:
                             tete = TeteEnum.RIEN;
                     }
-                    carte = new Carte(new Valeur(true, value, tete), forme, couleur, false);
+                    carte = new Carte(new Valeur(true, value, tete), forme, couleur, false, position);
                 }
-                cartes.put(position++, carte);
+                cartes.add(carte);
+                position++;
             }
         }
-        cartes.put(position++, new Carte(CouleurEnum.NOIR, true));
-        cartes.put(position++, new Carte(CouleurEnum.ROUGE, true));
+        cartes.add(new Carte(CouleurEnum.NOIR, true, 53));
+        cartes.add(new Carte(CouleurEnum.ROUGE, true, 53));
 
 
         return cartes;
+    }
+
+
+    public ArrayList<Integer> generatekeyFlow(int length, ArrayList<Carte> cards) {
+        ArrayList<Carte> cardJoker = reculJoker(cards);
+        return null;
+    }
+
+
+    public ArrayList<Carte> reculJoker(ArrayList<Carte> cards) {
+        boolean noirTrigger =
+        for (int i = 0; i<cards.size();i++) {
+            if (cards.get(i).isJoker()){
+                if (cards.get(i).getCouleurEnum().equals(CouleurEnum.NOIR)){
+                    Collections.swap(cards,i,i+1);
+
+                } else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE)) {
+                    Collections.swap(cards,i,i+2);
+
+                }
+            }
+        }
+        return cards;
     }
 }
