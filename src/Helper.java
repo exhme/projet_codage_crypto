@@ -1,9 +1,8 @@
-import Enums.*;
+import Enums.CouleurEnum;
+import Enums.FormeEnum;
+import Enums.TeteEnum;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Helper {
     private final Map<Character, Integer> CONVERT_MAP;
@@ -23,6 +22,62 @@ public class Helper {
             sortie.add(CONVERT_MAP.get(ch));
         }
         return sortie;
+    }
+
+    public ArrayList<Integer> strToInt(char[] chars) {
+        ArrayList<Integer> sortie = new ArrayList<>();
+        for (char ch : chars) {
+            sortie.add(CONVERT_MAP.get(ch));
+        }
+        return sortie;
+    }
+
+    public char[] encode(char[] msg, char[] key) {
+
+        ArrayList<Integer> msgInt = strToInt(msg);
+        ArrayList<Integer> keyInt = strToInt(key);
+
+
+        System.out.println("msg int : " + msgInt.toString());
+        System.out.println("key int : " + keyInt.toString());
+
+        char[] encryptedMsg = new char[msg.length];
+        ArrayList<Integer> encryptedMessageInt = new ArrayList<Integer>();
+        for (int i = 0; i < msg.length; i++) {
+            encryptedMessageInt.add((msgInt.get(i) + keyInt.get(i)) % 26);
+        }
+        encryptedMsg = intToCharTab(encryptedMessageInt);
+
+        return encryptedMsg;
+    }
+
+    public char[] decode(char[] encodedMessage, char[] key){
+        ArrayList<Integer> encodedMessageInt = strToInt(encodedMessage);
+        ArrayList<Integer> keyInt = strToInt(key);
+        ArrayList<Integer> decodedMessageInt = new ArrayList<Integer>();
+
+        for (int i = 0 ; i<encodedMessage.length; i++){
+            decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
+        }
+        char[] decodedMessage = intToCharTab(decodedMessageInt);
+
+        return decodedMessage;
+
+
+
+    }
+
+    public char[] intToCharTab(ArrayList<Integer> flowInterger) {
+        char[] charTab = new char[flowInterger.size()];
+
+        for (int i = 0; i < flowInterger.size(); i++) {
+            for (Map.Entry<Character, Integer> entry : CONVERT_MAP.entrySet()) {
+                if (entry.getValue().equals(flowInterger.get(i))) {
+                    charTab[i] = entry.getKey();
+                }
+            }
+        }
+        return charTab;
     }
 
 
@@ -77,23 +132,26 @@ public class Helper {
 
     public ArrayList<Integer> generatekeyFlow(int length, ArrayList<Carte> cards) {
         ArrayList<Carte> cardJoker = reculJoker(cards);
-        ArrayList<Carte> cardJokerSlice = sliceFromJoker(cards);
-        return null;
+        ArrayList<Carte> cardJokerSlice = sliceFromJoker(cardJoker);
+        ArrayList<Carte> coupeSimple = coupeSimpleDeterminee(cardJokerSlice);
+
+        ArrayList<Integer> numbers = readNumbers(coupeSimple, length);
+
+
+        return numbers;
     }
 
 
-    public ArrayList<Carte> reculJoker(ArrayList<Carte> cards){
+    public ArrayList<Carte> reculJoker(ArrayList<Carte> cards) {
         boolean noirTrigger = false;
         boolean rougeTrigger = false;
         for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).isJoker()) {
                 if (cards.get(i).getCouleurEnum().equals(CouleurEnum.NOIR) && !noirTrigger) {
-                    Collections.swap(cards, i, (i+1)%cards.size());
+                    Collections.swap(cards, i, (i + 1) % cards.size());
                     noirTrigger = true;
-                }
-
-                else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE) && !rougeTrigger) {
-                    Collections.swap(cards, i, (i+2)%cards.size());
+                } else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE) && !rougeTrigger) {
+                    Collections.swap(cards, i, (i + 2) % cards.size());
                     rougeTrigger = true;
                 }
 
@@ -103,35 +161,70 @@ public class Helper {
         return cards;
     }
 
-    public ArrayList<Carte> sliceFromJoker(ArrayList<Carte> cards){
+    public ArrayList<Carte> sliceFromJoker(ArrayList<Carte> cards) {
 
         //get pos of joker
         ArrayList<Integer> jokerIndexes = new ArrayList<Integer>();
-        for (int i = 0; i<cards.size();i++){
-            if (cards.get(i).isJoker()){
-                   jokerIndexes.add(i);
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).isJoker()) {
+                jokerIndexes.add(i);
             }
 
         }
-
         ArrayList<Carte> croppedCardsList = new ArrayList<Carte>(cards);
-
-
         ArrayList<Carte> beforeFirstJoker = new ArrayList<Carte>();
-        for (int i = 0; i<jokerIndexes.get(0);i++){
+        for (int i = 0; i < jokerIndexes.get(0); i++) {
             beforeFirstJoker.add(cards.get(i));
         }
         ArrayList<Carte> afterSecondJoker = new ArrayList<Carte>();
-        for (int i = jokerIndexes.get(1)+1; i<cards.size();i++){
+        for (int i = jokerIndexes.get(1) + 1; i < cards.size(); i++) {
             afterSecondJoker.add(cards.get(i));
         }
         croppedCardsList.removeAll(beforeFirstJoker);
         croppedCardsList.removeAll(afterSecondJoker);
-
         croppedCardsList.addAll(beforeFirstJoker);
-        croppedCardsList.addAll(0,afterSecondJoker);
+        croppedCardsList.addAll(0, afterSecondJoker);
+        return croppedCardsList;
+    }
 
 
-        return cards;
+    public ArrayList<Carte> coupeSimpleDeterminee(ArrayList<Carte> cards) {
+        Carte derniereCarte = cards.get(cards.size() - 1);
+        ArrayList<Carte> carteDessus = new ArrayList<Carte>();
+        ArrayList<Carte> croppedList = new ArrayList<Carte>(cards);
+
+        for (int i = 0; i < derniereCarte.id; i++) {
+            carteDessus.add(cards.get(i));
+        }
+        croppedList.removeAll(carteDessus);
+        croppedList.addAll(carteDessus);
+        croppedList.remove(derniereCarte);
+        croppedList.add(derniereCarte);
+        return croppedList;
+    }
+
+
+    public ArrayList<Integer> readNumbers(ArrayList<Carte> cards, int length) {
+        ArrayList<Integer> flowInterger = new ArrayList<Integer>();
+        for (int i = 0; i < length; i++) {
+            Carte carte_n = cards.get(i);
+            int n = carte_n.id;
+
+            Carte carte_m = cards.get(n + 1);
+            int m = carte_m.id;
+            if (carte_m.isJoker()) {
+                return generatekeyFlow(length, cards);
+
+            }
+
+            if (m > 26) {
+                m = m - 26;
+            }
+
+            flowInterger.add(m);
+        }
+        return flowInterger;
+
+
     }
 }
