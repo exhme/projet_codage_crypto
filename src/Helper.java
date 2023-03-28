@@ -3,7 +3,10 @@ import Enums.FormeEnum;
 import Enums.TeteEnum;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Helper {
     private final Map<Character, Integer> CONVERT_MAP;
@@ -43,13 +46,13 @@ public class Helper {
         return encryptedMsg;
     }
 
-    public char[] decode(char[] encodedMessage, char[] key){
+    public char[] decode(char[] encodedMessage, char[] key) {
         ArrayList<Integer> encodedMessageInt = strToInt(encodedMessage);
         ArrayList<Integer> keyInt = strToInt(key);
         ArrayList<Integer> decodedMessageInt = new ArrayList<>();
 
-        for (int i = 0 ; i<encodedMessage.length; i++){
-            if (encodedMessageInt.get(i) - keyInt.get(i) < 0){
+        for (int i = 0; i < encodedMessage.length; i++) {
+            if (encodedMessageInt.get(i) - keyInt.get(i) < 0) {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 26);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
@@ -189,33 +192,73 @@ public class Helper {
         return croppedList;
     }
 
-    public void exportCardOrder(ArrayList<Carte> cards){
-
-        String content = "bonjour";
-        try{
+    public void exportCardOrder(ArrayList<Carte> cards) {
+        System.out.println("export du jeu de carte");
+        try {
             File file = new File("export.txt");
             //creation du fichier si il existe pas
-            if (!file.exists()){
+            if (!file.exists()) {
                 file.createNewFile();
-
             }
             FileWriter fw = new FileWriter(file.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(fw);
-            for (int i = 0; i< cards.size();i++){
+            for (int i = 0; i < cards.size(); i++) {
+               //traitement specifique pour les joker
                 bw.write(Integer.toString(cards.get(i).id));
-                if (i-1 != cards.size()){
+                if (i - 1 != cards.size()) {
                     bw.newLine();
                 }
-
             }
             bw.close();
-
-        }catch (IOException e){
+            System.out.println("jeu exporté : " + file.getName());
+        } catch (IOException e) {
             e.printStackTrace();
-
         }
 
 
+
+    }
+
+    public void importCardOrder(String filename){
+        ArrayList<Integer> outputFile = new ArrayList<>();
+        ArrayList<Carte> carteInOrder = createCardInOrder();
+        try{
+            File file = new File(filename);
+            if (!file.exists()){
+                System.out.println("[Importer] : file not found");
+                return;
+            }
+            FileReader fr = new FileReader(file.getAbsoluteFile());
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            while (line != null) {
+                System.out.println(line);
+                outputFile.add(Integer.parseInt(line));
+                line = br.readLine();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        ArrayList<Carte> outputCarte = new ArrayList<>();
+
+
+        System.out.println("output file size : "+outputFile.size());
+        System.out.println("carte dans lordre size : "+carteInOrder.size());
+
+        System.out.println(outputFile);
+        for (int i = 0 ; i<outputFile.size();i++){
+            if (outputFile.get(i)==53){
+
+            }
+            for (int y = 0; y<carteInOrder.size();y++){
+                if (outputFile.get(i) == carteInOrder.get(y).id){
+                    outputCarte.add(carteInOrder.get(y));
+                }
+            }
+        }
+
+        System.out.println(outputCarte);
     }
 
 
