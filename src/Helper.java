@@ -54,17 +54,17 @@ public class Helper {
     public char[] decode(char[] encodedMessage, char[] key){
         ArrayList<Integer> encodedMessageInt = strToInt(encodedMessage);
         ArrayList<Integer> keyInt = strToInt(key);
-        ArrayList<Integer> decodedMessageInt = new ArrayList<Integer>();
+        ArrayList<Integer> decodedMessageInt = new ArrayList<>();
 
         for (int i = 0 ; i<encodedMessage.length; i++){
-            decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
+            if (encodedMessageInt.get(i) - keyInt.get(i) < 0){
+                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 26);
+            } else {
+                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
+            }
         }
-        char[] decodedMessage = intToCharTab(decodedMessageInt);
 
-        return decodedMessage;
-
-
-
+        return intToCharTab(decodedMessageInt);
     }
 
     public char[] intToCharTab(ArrayList<Integer> flowInterger) {
@@ -79,12 +79,6 @@ public class Helper {
         }
         return charTab;
     }
-
-
-    public Map<Character, Integer> getCONVERT_MAP() {
-        return CONVERT_MAP;
-    }
-
 
     public ArrayList<Carte> buildAllCard() {
         ArrayList<Carte> cartes = new ArrayList<>();
@@ -130,7 +124,7 @@ public class Helper {
         return cartes;
     }
 
-    public ArrayList<Integer> generatekeyFlow(int length, ArrayList<Carte> cards) {
+    public ArrayList<Integer> generateKeyFlow(int length, ArrayList<Carte> cards) {
         ArrayList<Carte> cardJoker = reculJoker(cards);
         ArrayList<Carte> cardJokerSlice = sliceFromJoker(cardJoker);
         ArrayList<Carte> coupeSimple = coupeSimpleDeterminee(cardJokerSlice);
@@ -205,20 +199,20 @@ public class Helper {
 
 
     public ArrayList<Integer> readNumbers(ArrayList<Carte> cards, int length) {
-        ArrayList<Integer> flowInterger = new ArrayList<Integer>();
+        ArrayList<Integer> flowInterger = new ArrayList<>();
+
         for (int i = 0; i < length; i++) {
             Carte carte_n = cards.get(i);
             int n = carte_n.id;
 
-            Carte carte_m = cards.get(n + 1);
+            Carte carte_m = cards.get((n + 1) % cards.size());
             int m = carte_m.id;
             if (carte_m.isJoker()) {
-                return generatekeyFlow(length, cards);
-
+                return generateKeyFlow(length, cards);
             }
 
             if (m > 26) {
-                m = m - 26;
+                m -= 26;
             }
 
             flowInterger.add(m);
