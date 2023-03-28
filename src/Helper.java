@@ -2,6 +2,7 @@ import Enums.CouleurEnum;
 import Enums.FormeEnum;
 import Enums.TeteEnum;
 
+import java.io.*;
 import java.util.*;
 
 public class Helper {
@@ -13,15 +14,6 @@ public class Helper {
         for (int i = 1; i < alphabet.length + 1; i++) {
             CONVERT_MAP.put(alphabet[i - 1], i);
         }
-    }
-
-    public ArrayList<Integer> strToInt(String str) {
-        ArrayList<Integer> sortie = new ArrayList<>();
-        char[] chars = str.toCharArray();
-        for (char ch : chars) {
-            sortie.add(CONVERT_MAP.get(ch));
-        }
-        return sortie;
     }
 
     public ArrayList<Integer> strToInt(char[] chars) {
@@ -41,8 +33,8 @@ public class Helper {
         System.out.println("msg int : " + msgInt.toString());
         System.out.println("key int : " + keyInt.toString());
 
-        char[] encryptedMsg = new char[msg.length];
-        ArrayList<Integer> encryptedMessageInt = new ArrayList<Integer>();
+        char[] encryptedMsg;
+        ArrayList<Integer> encryptedMessageInt = new ArrayList<>();
         for (int i = 0; i < msg.length; i++) {
             encryptedMessageInt.add((msgInt.get(i) + keyInt.get(i)) % 26);
         }
@@ -80,7 +72,7 @@ public class Helper {
         return charTab;
     }
 
-    public ArrayList<Carte> buildAllCard() {
+    public ArrayList<Carte> createCardInOrder() {
         ArrayList<Carte> cartes = new ArrayList<>();
         int position = 1;
         for (FormeEnum forme : FormeEnum.values()) {
@@ -158,19 +150,19 @@ public class Helper {
     public ArrayList<Carte> sliceFromJoker(ArrayList<Carte> cards) {
 
         //get pos of joker
-        ArrayList<Integer> jokerIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> jokerIndexes = new ArrayList<>();
         for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).isJoker()) {
                 jokerIndexes.add(i);
             }
 
         }
-        ArrayList<Carte> croppedCardsList = new ArrayList<Carte>(cards);
-        ArrayList<Carte> beforeFirstJoker = new ArrayList<Carte>();
+        ArrayList<Carte> croppedCardsList = new ArrayList<>(cards);
+        ArrayList<Carte> beforeFirstJoker = new ArrayList<>();
         for (int i = 0; i < jokerIndexes.get(0); i++) {
             beforeFirstJoker.add(cards.get(i));
         }
-        ArrayList<Carte> afterSecondJoker = new ArrayList<Carte>();
+        ArrayList<Carte> afterSecondJoker = new ArrayList<>();
         for (int i = jokerIndexes.get(1) + 1; i < cards.size(); i++) {
             afterSecondJoker.add(cards.get(i));
         }
@@ -184,8 +176,8 @@ public class Helper {
 
     public ArrayList<Carte> coupeSimpleDeterminee(ArrayList<Carte> cards) {
         Carte derniereCarte = cards.get(cards.size() - 1);
-        ArrayList<Carte> carteDessus = new ArrayList<Carte>();
-        ArrayList<Carte> croppedList = new ArrayList<Carte>(cards);
+        ArrayList<Carte> carteDessus = new ArrayList<>();
+        ArrayList<Carte> croppedList = new ArrayList<>(cards);
 
         for (int i = 0; i < derniereCarte.id; i++) {
             carteDessus.add(cards.get(i));
@@ -195,6 +187,35 @@ public class Helper {
         croppedList.remove(derniereCarte);
         croppedList.add(derniereCarte);
         return croppedList;
+    }
+
+    public void exportCardOrder(ArrayList<Carte> cards){
+
+        String content = "bonjour";
+        try{
+            File file = new File("export.txt");
+            //creation du fichier si il existe pas
+            if (!file.exists()){
+                file.createNewFile();
+
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (int i = 0; i< cards.size();i++){
+                bw.write(Integer.toString(cards.get(i).id));
+                if (i-1 != cards.size()){
+                    bw.newLine();
+                }
+
+            }
+            bw.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+
+        }
+
+
     }
 
 

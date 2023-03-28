@@ -12,7 +12,9 @@ public class Main {
 
         System.out.println("message to encode : "+ msgToEncode);
 
-        ArrayList<Carte> cards = helper.buildAllCard();
+        ArrayList<Carte> cards = helper.createCardInOrder();
+
+        helper.exportCardOrder(cards);
 
         Collections.shuffle(cards);
         ArrayList<Integer> keyflow = helper.generateKeyFlow(msgToEncode.length(), cards);
