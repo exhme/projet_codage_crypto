@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
 
         Helper helper = new Helper();
-        String msgToEncode = "alerte";
+        String msgToEncode = "abcde";
 
 
 
@@ -16,7 +16,7 @@ public class Main {
 
         Collections.shuffle(cards);
         ArrayList<Integer> keyflow = helper.generateKeyFlow(msgToEncode.length(), cards);
-        System.out.println("keyflow : "+keyflow);
+        System.out.println("keyflow : " + keyflow);
 
 
         char[] key = helper.intToCharTab(keyflow);
