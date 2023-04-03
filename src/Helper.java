@@ -2,7 +2,11 @@ import Enums.CouleurEnum;
 import Enums.FormeEnum;
 import Enums.TeteEnum;
 
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Helper {
     private final Map<Character, Integer> CONVERT_MAP;
@@ -13,15 +17,6 @@ public class Helper {
         for (int i = 1; i < alphabet.length + 1; i++) {
             CONVERT_MAP.put(alphabet[i - 1], i);
         }
-    }
-
-    public ArrayList<Integer> strToInt(String str) {
-        ArrayList<Integer> sortie = new ArrayList<>();
-        char[] chars = str.toCharArray();
-        for (char ch : chars) {
-            sortie.add(CONVERT_MAP.get(ch));
-        }
-        return sortie;
     }
 
     public ArrayList<Integer> strToInt(char[] chars) {
@@ -41,8 +36,8 @@ public class Helper {
         System.out.println("msg int : " + msgInt.toString());
         System.out.println("key int : " + keyInt.toString());
 
-        char[] encryptedMsg = new char[msg.length];
-        ArrayList<Integer> encryptedMessageInt = new ArrayList<Integer>();
+        char[] encryptedMsg;
+        ArrayList<Integer> encryptedMessageInt = new ArrayList<>();
         for (int i = 0; i < msg.length; i++) {
             encryptedMessageInt.add((msgInt.get(i) + keyInt.get(i)) % 26);
         }
@@ -51,13 +46,13 @@ public class Helper {
         return encryptedMsg;
     }
 
-    public char[] decode(char[] encodedMessage, char[] key){
+    public char[] decode(char[] encodedMessage, char[] key) {
         ArrayList<Integer> encodedMessageInt = strToInt(encodedMessage);
         ArrayList<Integer> keyInt = strToInt(key);
         ArrayList<Integer> decodedMessageInt = new ArrayList<>();
 
-        for (int i = 0 ; i<encodedMessage.length; i++){
-            if (encodedMessageInt.get(i) - keyInt.get(i) < 0){
+        for (int i = 0; i < encodedMessage.length; i++) {
+            if (encodedMessageInt.get(i) - keyInt.get(i) < 0) {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 26);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
@@ -80,7 +75,7 @@ public class Helper {
         return charTab;
     }
 
-    public ArrayList<Carte> buildAllCard() {
+    public ArrayList<Carte> createCardInOrder() {
         ArrayList<Carte> cartes = new ArrayList<>();
         int position = 1;
         for (FormeEnum forme : FormeEnum.values()) {
@@ -158,19 +153,19 @@ public class Helper {
     public ArrayList<Carte> sliceFromJoker(ArrayList<Carte> cards) {
 
         //get pos of joker
-        ArrayList<Integer> jokerIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> jokerIndexes = new ArrayList<>();
         for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).isJoker()) {
                 jokerIndexes.add(i);
             }
 
         }
-        ArrayList<Carte> croppedCardsList = new ArrayList<Carte>(cards);
-        ArrayList<Carte> beforeFirstJoker = new ArrayList<Carte>();
+        ArrayList<Carte> croppedCardsList = new ArrayList<>(cards);
+        ArrayList<Carte> beforeFirstJoker = new ArrayList<>();
         for (int i = 0; i < jokerIndexes.get(0); i++) {
             beforeFirstJoker.add(cards.get(i));
         }
-        ArrayList<Carte> afterSecondJoker = new ArrayList<Carte>();
+        ArrayList<Carte> afterSecondJoker = new ArrayList<>();
         for (int i = jokerIndexes.get(1) + 1; i < cards.size(); i++) {
             afterSecondJoker.add(cards.get(i));
         }
@@ -184,8 +179,8 @@ public class Helper {
 
     public ArrayList<Carte> coupeSimpleDeterminee(ArrayList<Carte> cards) {
         Carte derniereCarte = cards.get(cards.size() - 1);
-        ArrayList<Carte> carteDessus = new ArrayList<Carte>();
-        ArrayList<Carte> croppedList = new ArrayList<Carte>(cards);
+        ArrayList<Carte> carteDessus = new ArrayList<>();
+        ArrayList<Carte> croppedList = new ArrayList<>(cards);
 
         for (int i = 0; i < derniereCarte.id; i++) {
             carteDessus.add(cards.get(i));
@@ -195,6 +190,99 @@ public class Helper {
         croppedList.remove(derniereCarte);
         croppedList.add(derniereCarte);
         return croppedList;
+    }
+
+    public void exportCardOrder(ArrayList<Carte> cards) {
+        System.out.println("export du jeu de carte");
+        try {
+            File file = new File("export.txt");
+            //creation du fichier si il existe pas
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (int i = 0; i < cards.size(); i++) {
+               //traitement specifique pour les joker
+                if (cards.get(i).isJoker()){
+                    CouleurEnum couleur = cards.get(i).getCouleurEnum();
+                    if (couleur == CouleurEnum.NOIR){
+                        bw.write(Integer.toString(cards.get(i).id)+"0");
+                    } else if (couleur == CouleurEnum.ROUGE) {
+                        bw.write(Integer.toString(cards.get(i).id)+"1");
+                    }
+                }
+                else {
+                    bw.write(Integer.toString(cards.get(i).id));
+                }
+                if (i - 1 != cards.size()) {
+                    bw.newLine();
+                }
+            }
+            bw.close();
+            System.out.println("jeu exporté : " + file.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+    public ArrayList<Carte> importCardOrder(String filename){
+        ArrayList<Integer> outputFile = new ArrayList<>();
+        ArrayList<Carte> carteInOrder = createCardInOrder();
+        try{
+            File file = new File(filename);
+            if (!file.exists()){
+                System.out.println("[Importer] : file not found");
+                return null;
+            }
+            FileReader fr = new FileReader(file.getAbsoluteFile());
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            while (line != null) {
+                System.out.println(line);
+                outputFile.add(Integer.parseInt(line));
+                line = br.readLine();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        ArrayList<Carte> outputCarte = new ArrayList<>();
+
+
+        System.out.println("output file size : "+outputFile.size());
+        System.out.println("carte dans lordre size : "+carteInOrder.size());
+
+        System.out.println(outputFile);
+        for (int i = 0 ; i<outputFile.size();i++){
+            if (outputFile.get(i)==530){
+                // joker noir
+                for (int j =0; j < carteInOrder.size();j++){
+                    if (carteInOrder.get(j).isJoker() && carteInOrder.get(j).id == 53 && carteInOrder.get(j).getCouleurEnum().equals(CouleurEnum.NOIR)){
+                        outputCarte.add(carteInOrder.get(j));
+                    }
+                }
+            }
+            else if (outputFile.get(i)==531){
+                //joker rouge
+                for (int j =0; j < carteInOrder.size();j++){
+                    if (carteInOrder.get(j).isJoker() && carteInOrder.get(j).id == 53 && carteInOrder.get(j).getCouleurEnum().equals(CouleurEnum.ROUGE)){
+                        outputCarte.add(carteInOrder.get(j));
+                    }
+                }
+            }
+            for (int y = 0; y<carteInOrder.size();y++){
+                if (outputFile.get(i) == carteInOrder.get(y).id){
+                    outputCarte.add(carteInOrder.get(y));
+                }
+            }
+        }
+
+        return outputCarte;
+
     }
 
 
