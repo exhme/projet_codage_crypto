@@ -204,7 +204,17 @@ public class Helper {
             BufferedWriter bw = new BufferedWriter(fw);
             for (int i = 0; i < cards.size(); i++) {
                //traitement specifique pour les joker
-                bw.write(Integer.toString(cards.get(i).id));
+                if (cards.get(i).isJoker()){
+                    CouleurEnum couleur = cards.get(i).getCouleurEnum();
+                    if (couleur == CouleurEnum.NOIR){
+                        bw.write(Integer.toString(cards.get(i).id)+"0");
+                    } else if (couleur == CouleurEnum.ROUGE) {
+                        bw.write(Integer.toString(cards.get(i).id)+"1");
+                    }
+                }
+                else {
+                    bw.write(Integer.toString(cards.get(i).id));
+                }
                 if (i - 1 != cards.size()) {
                     bw.newLine();
                 }
@@ -219,14 +229,14 @@ public class Helper {
 
     }
 
-    public void importCardOrder(String filename){
+    public ArrayList<Carte> importCardOrder(String filename){
         ArrayList<Integer> outputFile = new ArrayList<>();
         ArrayList<Carte> carteInOrder = createCardInOrder();
         try{
             File file = new File(filename);
             if (!file.exists()){
                 System.out.println("[Importer] : file not found");
-                return;
+                return null;
             }
             FileReader fr = new FileReader(file.getAbsoluteFile());
             BufferedReader br = new BufferedReader(fr);
@@ -248,8 +258,21 @@ public class Helper {
 
         System.out.println(outputFile);
         for (int i = 0 ; i<outputFile.size();i++){
-            if (outputFile.get(i)==53){
-
+            if (outputFile.get(i)==530){
+                // joker noir
+                for (int j =0; j < carteInOrder.size();j++){
+                    if (carteInOrder.get(j).isJoker() && carteInOrder.get(j).id == 53 && carteInOrder.get(j).getCouleurEnum().equals(CouleurEnum.NOIR)){
+                        outputCarte.add(carteInOrder.get(j));
+                    }
+                }
+            }
+            else if (outputFile.get(i)==531){
+                //joker rouge
+                for (int j =0; j < carteInOrder.size();j++){
+                    if (carteInOrder.get(j).isJoker() && carteInOrder.get(j).id == 53 && carteInOrder.get(j).getCouleurEnum().equals(CouleurEnum.ROUGE)){
+                        outputCarte.add(carteInOrder.get(j));
+                    }
+                }
             }
             for (int y = 0; y<carteInOrder.size();y++){
                 if (outputFile.get(i) == carteInOrder.get(y).id){
@@ -258,7 +281,8 @@ public class Helper {
             }
         }
 
-        System.out.println(outputCarte);
+        return outputCarte;
+
     }
 
 

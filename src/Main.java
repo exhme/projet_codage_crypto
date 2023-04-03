@@ -15,9 +15,9 @@ public class Main {
         ArrayList<Carte> cards = helper.createCardInOrder();
 
         Collections.shuffle(cards);
-        //helper.exportCardOrder(cards);
-        helper.importCardOrder("export.txt");
-        ArrayList<Integer> keyflow = helper.generateKeyFlow(msgToEncode.length(), cards);
+        helper.exportCardOrder(cards);
+        ArrayList<Carte> cardImport = helper.importCardOrder("export.txt");
+        ArrayList<Integer> keyflow = helper.generateKeyFlow(msgToEncode.length(), cardImport);
         System.out.println("keyflow : "+keyflow);
 
 
