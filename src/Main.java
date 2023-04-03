@@ -7,6 +7,7 @@ public class Main {
 
         Helper helper = new Helper();
         String msgToEncode = "alerte";
+        View view = new View();
 
 
 
