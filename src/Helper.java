@@ -4,26 +4,30 @@ import Enums.TeteEnum;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Helper {
-    private final Map<Character, Integer> CONVERT_MAP;
+    private final ArrayList<Caractere> CONVERT_MAP;
 
     public Helper() {
-        CONVERT_MAP = new HashMap<>();
+        CONVERT_MAP = new ArrayList<Caractere>();
         char[] alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-        for (int i = 1; i < alphabet.length + 1; i++) {
-            CONVERT_MAP.put(alphabet[i - 1], i);
-        }
+        int iter = 1;
+        for (char ch : alphabet) {
+            CONVERT_MAP.add(new Caractere(ch,iter));
+                iter++;
+            }
     }
 
     public ArrayList<Integer> strToInt(char[] chars) {
         ArrayList<Integer> sortie = new ArrayList<>();
         for (char ch : chars) {
-            sortie.add(CONVERT_MAP.get(ch));
-        }
+            for (Caractere caractere : CONVERT_MAP)
+                 if (caractere.getLettre() == ch) {
+                    sortie.add(caractere.getValue());
+                }
+            }
         return sortie;
     }
 
@@ -77,18 +81,15 @@ public class Helper {
     public char[] intToCharTab(ArrayList<Integer> flowInterger) {
         char[] charTab = new char[flowInterger.size()];
 
-        for (int i = 0; i < flowInterger.size(); i++) {
-            for (Map.Entry<Character, Integer> entry : CONVERT_MAP.entrySet()) {
-
-                if (entry.getValue().equals(flowInterger.get(i))) {
-//                    System.out.println("letter found: " + entry.getKey() + " for value: " + entry.getValue());
-                    //System.out.println(entry.getKey());
-                    charTab[i] = entry.getKey();
+        for (int i=0; i<flowInterger.size(); i++){
+            for (Caractere caractere : CONVERT_MAP) {
+                if (caractere.getValue() == flowInterger.get(i)) {
+                    charTab[i] = caractere.getLettre();
                 }
+
             }
         }
-
-//        System.out.println("charTab : " + Arrays.toString(charTab));
+        System.out.println("charTab : " + Arrays.toString(charTab));
         return charTab;
     }
 
