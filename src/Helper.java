@@ -28,22 +28,30 @@ public class Helper {
     }
 
     public char[] encode(char[] msg, char[] key) {
-
         ArrayList<Integer> msgInt = strToInt(msg);
         ArrayList<Integer> keyInt = strToInt(key);
-
-
+//        System.out.println("msg : " + Arrays.toString(msg));
         System.out.println("msg int : " + msgInt.toString());
-        System.out.println("key int : " + keyInt.toString());
 
         char[] encryptedMsg;
+//        System.out.println("key : " + Arrays.toString(key));
+//        System.out.println("key int : " + keyInt.toString());
         ArrayList<Integer> encryptedMessageInt = new ArrayList<>();
         for (int i = 0; i < msg.length; i++) {
-            encryptedMessageInt.add((msgInt.get(i) + keyInt.get(i)) % 26);
+//            System.out.println("msgInt.get("+ i +") : " + msgInt.get(i));
+//            System.out.println("keyInt.get("+ i +") : " + keyInt.get(i));
+//            if ((msgInt.get(i) + keyInt.get(i)) % 26 == 0) {
+//                encryptedMessageInt.add(1);
+//            } else {
+//            }
+            if (msgInt.get(i) + keyInt.get(i) > 26) {
+                encryptedMessageInt.add(((msgInt.get(i) + keyInt.get(i)) % 26) + 1);
+            } else {
+                encryptedMessageInt.add(msgInt.get(i) + keyInt.get(i));
+            }
         }
-        encryptedMsg = intToCharTab(encryptedMessageInt);
 
-        return encryptedMsg;
+        return intToCharTab(encryptedMessageInt);
     }
 
     public char[] decode(char[] encodedMessage, char[] key) {
@@ -51,14 +59,18 @@ public class Helper {
         ArrayList<Integer> keyInt = strToInt(key);
         ArrayList<Integer> decodedMessageInt = new ArrayList<>();
 
-        for (int i = 0; i < encodedMessage.length; i++) {
-            if (encodedMessageInt.get(i) - keyInt.get(i) < 0) {
-                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 26);
+        System.out.println("decoded key :" + keyInt.toString());
+        System.out.println("encoded message :" + encodedMessageInt.toString());
+
+        for (int i = 0; i < encodedMessage.length; i++){
+            System.out.println("Resultat de " + encodedMessageInt.get(i) + " - " + keyInt.get(i) + ": " + (encodedMessageInt.get(i) - keyInt.get(i)));
+            if (encodedMessageInt.get(i) - keyInt.get(i) <= 0){
+                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 25);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
             }
         }
-
+        System.out.println("decoded message : " + decodedMessageInt);
         return intToCharTab(decodedMessageInt);
     }
 
@@ -67,11 +79,16 @@ public class Helper {
 
         for (int i = 0; i < flowInterger.size(); i++) {
             for (Map.Entry<Character, Integer> entry : CONVERT_MAP.entrySet()) {
+
                 if (entry.getValue().equals(flowInterger.get(i))) {
+//                    System.out.println("letter found: " + entry.getKey() + " for value: " + entry.getValue());
+                    //System.out.println(entry.getKey());
                     charTab[i] = entry.getKey();
                 }
             }
         }
+
+//        System.out.println("charTab : " + Arrays.toString(charTab));
         return charTab;
     }
 
@@ -124,10 +141,7 @@ public class Helper {
         ArrayList<Carte> cardJokerSlice = sliceFromJoker(cardJoker);
         ArrayList<Carte> coupeSimple = coupeSimpleDeterminee(cardJokerSlice);
 
-        ArrayList<Integer> numbers = readNumbers(coupeSimple, length);
-
-
-        return numbers;
+        return readNumbers(coupeSimple, length);
     }
 
 
@@ -137,14 +151,12 @@ public class Helper {
         for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).isJoker()) {
                 if (cards.get(i).getCouleurEnum().equals(CouleurEnum.NOIR) && !noirTrigger) {
-                    Collections.swap(cards, i, (i + 1) % cards.size());
+                    Collections.swap(cards, i, ((i + 1) % cards.size()));
                     noirTrigger = true;
                 } else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE) && !rougeTrigger) {
-                    Collections.swap(cards, i, (i + 2) % cards.size());
+                    Collections.swap(cards, i, ((i + 2) % cards.size()));
                     rougeTrigger = true;
                 }
-
-
             }
         }
         return cards;
@@ -158,7 +170,6 @@ public class Helper {
             if (cards.get(i).isJoker()) {
                 jokerIndexes.add(i);
             }
-
         }
         ArrayList<Carte> croppedCardsList = new ArrayList<>(cards);
         ArrayList<Carte> beforeFirstJoker = new ArrayList<>();
@@ -306,7 +317,5 @@ public class Helper {
             flowInterger.add(m);
         }
         return flowInterger;
-
-
     }
 }
