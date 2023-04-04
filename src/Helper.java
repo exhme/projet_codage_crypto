@@ -30,7 +30,7 @@ public class Helper {
         System.out.println("msg int : " + msgInt.toString());
 
 //        System.out.println("key : " + Arrays.toString(key));
-        System.out.println("key int : " + keyInt.toString());
+//        System.out.println("key int : " + keyInt.toString());
 
         ArrayList<Integer> encryptedMessageInt = new ArrayList<>();
         for (int i = 0; i < msg.length; i++) {
@@ -55,16 +55,18 @@ public class Helper {
         ArrayList<Integer> keyInt = strToInt(key);
         ArrayList<Integer> decodedMessageInt = new ArrayList<>();
 
-        //System.out.println("encoded message :" + encodedMessageInt.toString());
+        System.out.println("decoded key :" + keyInt.toString());
+        System.out.println("encoded message :" + encodedMessageInt.toString());
 
         for (int i = 0; i < encodedMessage.length; i++){
-            if (encodedMessageInt.get(i) - keyInt.get(i) < 1){
-                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
+            System.out.println("Resultat de " + encodedMessageInt.get(i) + " - " + keyInt.get(i) + ": " + (encodedMessageInt.get(i) - keyInt.get(i)));
+            if (encodedMessageInt.get(i) - keyInt.get(i) <= 0){
+                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 25);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
             }
         }
-        System.out.println(decodedMessageInt);
+        System.out.println("decoded message : " + decodedMessageInt);
         return intToCharTab(decodedMessageInt);
     }
 
@@ -82,7 +84,7 @@ public class Helper {
             }
         }
 
-        System.out.println("charTab : " + Arrays.toString(charTab));
+//        System.out.println("charTab : " + Arrays.toString(charTab));
         return charTab;
     }
 
