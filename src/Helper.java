@@ -204,7 +204,7 @@ public class Helper {
         return croppedList;
     }
 
-    public void exportCardOrder(ArrayList<Carte> cards) {
+    public String exportCardOrder(ArrayList<Carte> cards) {
         System.out.println("export du jeu de carte");
         try {
             File file = new File("export.txt");
@@ -233,12 +233,12 @@ public class Helper {
             }
             bw.close();
             System.out.println("jeu exporté : " + file.getName());
+            return file.getName();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-
+        return null;
     }
 
     public ArrayList<Carte> importCardOrder(String filename){
@@ -319,4 +319,21 @@ public class Helper {
         }
         return flowInterger;
     }
+
+
+    public String encodeButtonTriggered(String msg) {
+       ArrayList<Carte> cards = createCardInOrder();
+       Collections.shuffle(cards);
+       ArrayList<Integer> keyflow = generateKeyFlow(msg.length(),cards);
+        System.out.println("keyflow : "+keyflow);
+        char[] key = intToCharTab(keyflow);
+        char[] encodedMessage = encode(msg.toCharArray(),key);
+        System.out.println("encoded message : "+new String(encodedMessage));
+
+        String filename = exportCardOrder(cards);
+
+        return filename;
+
+    }
+
 }
