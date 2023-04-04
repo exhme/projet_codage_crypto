@@ -18,6 +18,8 @@ public class Helper {
             CONVERT_MAP.add(new Caractere(ch,iter));
                 iter++;
             }
+
+        System.out.println("CONVERT_MAP : " + CONVERT_MAP.toString());
     }
 
     public ArrayList<Integer> strToInt(char[] chars) {
@@ -48,12 +50,17 @@ public class Helper {
 //                encryptedMessageInt.add(1);
 //            } else {
 //            }
+            System.out.println("==========");
+            System.out.println(msgInt.get(i));
+            System.out.println(keyInt.get(i));
             if (msgInt.get(i) + keyInt.get(i) > 26) {
-                encryptedMessageInt.add(((msgInt.get(i) + keyInt.get(i)) % 26) + 1);
+                encryptedMessageInt.add(((msgInt.get(i) + keyInt.get(i)) % 26));
             } else {
                 encryptedMessageInt.add(msgInt.get(i) + keyInt.get(i));
             }
         }
+
+        System.out.println(intToCharTab(encryptedMessageInt));
 
         return intToCharTab(encryptedMessageInt);
     }
@@ -63,13 +70,17 @@ public class Helper {
         ArrayList<Integer> keyInt = strToInt(key);
         ArrayList<Integer> decodedMessageInt = new ArrayList<>();
 
+        System.out.println("-----dans decode------");
+        System.out.println("encoded message :" + Arrays.toString(encodedMessage));
+
+
         System.out.println("decoded key :" + keyInt.toString());
         System.out.println("encoded message :" + encodedMessageInt.toString());
 
         for (int i = 0; i < encodedMessage.length; i++){
             System.out.println("Resultat de " + encodedMessageInt.get(i) + " - " + keyInt.get(i) + ": " + (encodedMessageInt.get(i) - keyInt.get(i)));
             if (encodedMessageInt.get(i) - keyInt.get(i) <= 0){
-                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 25);
+                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 26);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
             }
@@ -89,6 +100,9 @@ public class Helper {
 
             }
         }
+
+        System.out.println("!!!!!!!!!!!");
+        System.out.println(flowInterger.toString());
         System.out.println("charTab : " + Arrays.toString(charTab));
         return charTab;
     }
@@ -145,13 +159,25 @@ public class Helper {
         return readNumbers(coupeSimple, length);
     }
 
+/*
+ Recul du joker noir d’une position :
+  Vous faites reculer le joker noir d’une place
+  (vous le permutez avec la carte qui est juste derri`ere lui).
+   Si le joker noir est en derni`ere position il passe derri`ere
+   la carte du dessus (donc, en deuxi`eme position).
 
+   Vous faites reculer le joker rouge de deux cartes.
+    S’il  ́etait en derni`ere position,
+    il passe en troisi`eme position; s’il  ́etait en avant
+     derni`ere position il passe en deuxi`eme.
+ */
     public ArrayList<Carte> reculJoker(ArrayList<Carte> cards) {
         boolean noirTrigger = false;
         boolean rougeTrigger = false;
         for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).isJoker()) {
                 if (cards.get(i).getCouleurEnum().equals(CouleurEnum.NOIR) && !noirTrigger) {
+                    // swap : Params: list – The list in which to swap elements. i – the index of one element to be swapped. j – the index of the other element to be swapped.
                     Collections.swap(cards, i, ((i + 1) % cards.size()));
                     noirTrigger = true;
                 } else if (cards.get(i).getCouleurEnum().equals(CouleurEnum.ROUGE) && !rougeTrigger) {
