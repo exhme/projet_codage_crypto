@@ -9,6 +9,7 @@ import java.util.Collections;
 
 public class Helper {
     private final ArrayList<Caractere> CONVERT_MAP;
+    private int NB_ALPHA;
 
     public Helper() {
         CONVERT_MAP = new ArrayList<Caractere>();
@@ -18,8 +19,8 @@ public class Helper {
             CONVERT_MAP.add(new Caractere(ch,iter));
                 iter++;
             }
+        NB_ALPHA = CONVERT_MAP.size();
 
-        System.out.println("CONVERT_MAP : " + CONVERT_MAP.toString());
     }
 
     public ArrayList<Integer> strToInt(char[] chars) {
@@ -40,21 +41,14 @@ public class Helper {
         System.out.println("msg int : " + msgInt.toString());
 
         char[] encryptedMsg;
-//        System.out.println("key : " + Arrays.toString(key));
-//        System.out.println("key int : " + keyInt.toString());
         ArrayList<Integer> encryptedMessageInt = new ArrayList<>();
         for (int i = 0; i < msg.length; i++) {
-//            System.out.println("msgInt.get("+ i +") : " + msgInt.get(i));
-//            System.out.println("keyInt.get("+ i +") : " + keyInt.get(i));
-//            if ((msgInt.get(i) + keyInt.get(i)) % 26 == 0) {
-//                encryptedMessageInt.add(1);
-//            } else {
-//            }
+
             System.out.println("==========");
             System.out.println(msgInt.get(i));
             System.out.println(keyInt.get(i));
-            if (msgInt.get(i) + keyInt.get(i) > 26) {
-                encryptedMessageInt.add(((msgInt.get(i) + keyInt.get(i)) % 26));
+            if (msgInt.get(i) + keyInt.get(i) > NB_ALPHA) {
+                encryptedMessageInt.add(((msgInt.get(i) + keyInt.get(i)) % NB_ALPHA));
             } else {
                 encryptedMessageInt.add(msgInt.get(i) + keyInt.get(i));
             }
@@ -78,9 +72,8 @@ public class Helper {
         System.out.println("encoded message :" + encodedMessageInt.toString());
 
         for (int i = 0; i < encodedMessage.length; i++){
-            System.out.println("Resultat de " + encodedMessageInt.get(i) + " - " + keyInt.get(i) + ": " + (encodedMessageInt.get(i) - keyInt.get(i)));
             if (encodedMessageInt.get(i) - keyInt.get(i) <= 0){
-                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + 26);
+                decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + NB_ALPHA);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
             }
@@ -337,12 +330,14 @@ public class Helper {
                 return generateKeyFlow(length, cards);
             }
 
-            if (m > 26) {
-                m -= 26;
+            if (m > NB_ALPHA) {
+                m -= NB_ALPHA;
             }
 
             flowInterger.add(m);
         }
         return flowInterger;
     }
+
+
 }
