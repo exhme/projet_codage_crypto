@@ -1,17 +1,24 @@
 package com.chargo;
 
 import com.chargo.helper.*;
+import com.chargo.ui.GUI;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 public class Main {
-    public static void main(String[] args) {
-        for (int i = 0;i<15;i++){
-            encodeDecode();
-        }
 
+    public static void main(String[] args) {
+        GUI gui = new GUI();
+        gui.launchApp();
     }
 
     public static void encodeDecode(){

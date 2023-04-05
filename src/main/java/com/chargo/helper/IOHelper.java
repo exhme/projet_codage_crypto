@@ -2,6 +2,8 @@ package com.chargo.helper;
 
 import com.chargo.enums.CouleurEnum;
 import com.chargo.Carte;
+import com.chargo.ui.GUI;
+import javafx.stage.FileChooser;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,7 +13,9 @@ public class IOHelper extends Helper{
     public String exportCardOrder(ArrayList<Carte> cards) {
         System.out.println("export du jeu de carte");
         try {
-            File file = new File("export.txt");
+            FileChooser fc = new FileChooser();
+            fc.setInitialFileName("secret-key.txt");
+            File file = fc.showSaveDialog(GUI.stage);
             //creation du fichier si il existe pas
             if (!file.exists()) {
                 file.createNewFile();
@@ -42,11 +46,6 @@ public class IOHelper extends Helper{
             e.printStackTrace();
         }
         return null;
-
-
-
-
-
     }
 
     public ArrayList<Carte> importCardOrder(String filename){
