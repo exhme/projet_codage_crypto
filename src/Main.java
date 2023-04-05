@@ -8,6 +8,13 @@ import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
+        for (int i = 0;i<1500;i++){
+            encodeDecode();
+        }
+
+    }
+
+    public static void encodeDecode(){
 
         Helper helper = new Helper(); //ok
         String msgToEncode = "zcharlesbonjour";
@@ -23,7 +30,13 @@ public class Main {
         ArrayList<Integer> keyflow = helper.generateKeyFlow(msgToEncode.length(), cards);
 //        System.out.println("keyflow : " + keyflow);
 
-
+        ArrayList<Integer> msgInt = helper.strToInt(msgToEncode.toCharArray());
+        for (int i = 0; i < msgInt.size(); i++){
+            if (msgInt.get(i).equals(keyflow.get(i)) && msgInt.get(i) == 26){
+                encodeDecode();
+                return;
+            }
+        }
 
         char[] key = helper.intToCharTab(keyflow);
         char[] encodedMessage  = helper.encode(msgToEncode.toCharArray(),key);

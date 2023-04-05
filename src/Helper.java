@@ -20,9 +20,7 @@ public class Helper {
                 iter++;
             }
         NB_ALPHA = CONVERT_MAP.size();
-        System.out.println(NB_ALPHA);
 
-        System.out.println("CONVERT_MAP : " + CONVERT_MAP.toString());
     }
 
     public ArrayList<Integer> strToInt(char[] chars) {
@@ -74,7 +72,6 @@ public class Helper {
         System.out.println("encoded message :" + encodedMessageInt.toString());
 
         for (int i = 0; i < encodedMessage.length; i++){
-            System.out.println("Resultat de " + encodedMessageInt.get(i) + " - " + keyInt.get(i) + ": " + (encodedMessageInt.get(i) - keyInt.get(i)));
             if (encodedMessageInt.get(i) - keyInt.get(i) <= 0){
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + NB_ALPHA);
             } else {
@@ -341,4 +338,6 @@ public class Helper {
         }
         return flowInterger;
     }
+
+
 }
