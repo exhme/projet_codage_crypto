@@ -1,7 +1,6 @@
 import Enums.CouleurEnum;
 import Enums.FormeEnum;
 import Enums.TeteEnum;
-import com.sun.tools.corba.se.idl.InterfaceGen;
 
 import java.io.*;
 import java.util.ArrayList;
