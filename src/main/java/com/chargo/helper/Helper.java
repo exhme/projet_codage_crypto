@@ -1,27 +1,27 @@
 package com.chargo.helper;
 
 import com.chargo.Carte;
-import com.chargo.utils.Valeur;
 import com.chargo.enums.CouleurEnum;
 import com.chargo.enums.FormeEnum;
 import com.chargo.enums.TeteEnum;
 import com.chargo.utils.Caractere;
+import com.chargo.utils.Valeur;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class Helper {
     private final ArrayList<Caractere> CONVERT_MAP;
-    private int NB_ALPHA;
+    private final int NB_CARDS = 54;
+    private final int NB_ALPHA;
 
     public Helper() {
         CONVERT_MAP = new ArrayList<Caractere>();
         char[] alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         int iter = 1;
         for (char ch : alphabet) {
-            CONVERT_MAP.add(new Caractere(ch,iter));
+            CONVERT_MAP.add(new Caractere(ch, iter));
             iter++;
         }
         NB_ALPHA = CONVERT_MAP.size();
@@ -38,6 +38,7 @@ public class Helper {
         }
         return sortie;
     }
+
 
     public char[] encode(char[] msg, char[] key) {
         ArrayList<Integer> msgInt = strToInt(msg);
@@ -64,6 +65,7 @@ public class Helper {
         return intToCharTab(encryptedMessageInt);
     }
 
+
     public char[] decode(char[] encodedMessage, char[] key) {
         ArrayList<Integer> encodedMessageInt = strToInt(encodedMessage);
         ArrayList<Integer> keyInt = strToInt(key);
@@ -76,8 +78,8 @@ public class Helper {
         System.out.println("decoded key :" + keyInt.toString());
         System.out.println("encoded message :" + encodedMessageInt.toString());
 
-        for (int i = 0; i < encodedMessage.length; i++){
-            if (encodedMessageInt.get(i) - keyInt.get(i) <= 0){
+        for (int i = 0; i < encodedMessage.length; i++) {
+            if (encodedMessageInt.get(i) - keyInt.get(i) <= 0) {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i) + NB_ALPHA);
             } else {
                 decodedMessageInt.add(encodedMessageInt.get(i) - keyInt.get(i));
@@ -90,7 +92,7 @@ public class Helper {
     public char[] intToCharTab(ArrayList<Integer> flowInterger) {
         char[] charTab = new char[flowInterger.size()];
 
-        for (int i=0; i<flowInterger.size(); i++){
+        for (int i = 0; i < flowInterger.size(); i++) {
             for (Caractere caractere : CONVERT_MAP) {
                 if (caractere.getValue() == flowInterger.get(i)) {
                     charTab[i] = caractere.getLettre();
@@ -100,10 +102,11 @@ public class Helper {
         }
 
         System.out.println("!!!!!!!!!!!");
-        System.out.println(flowInterger.toString());
+        System.out.println(flowInterger);
         System.out.println("charTab : " + Arrays.toString(charTab));
         return charTab;
     }
+
 
     public ArrayList<Carte> createCardInOrder() {
         ArrayList<Carte> cartes = new ArrayList<>();
@@ -150,11 +153,16 @@ public class Helper {
     }
 
     public ArrayList<Integer> generateKeyFlow(int length, ArrayList<Carte> cards) {
+        ArrayList<Carte> carteMelange = melange(cards);
+
+        return readNumbers(carteMelange, length);
+    }
+
+    public ArrayList<Carte> melange(ArrayList<Carte> cards) {
         ArrayList<Carte> cardJoker = reculJoker(cards);
         ArrayList<Carte> cardJokerSlice = sliceFromJoker(cardJoker);
         ArrayList<Carte> coupeSimple = coupeSimpleDeterminee(cardJokerSlice);
-
-        return readNumbers(coupeSimple, length);
+        return coupeSimple;
     }
 
     /*
@@ -229,10 +237,6 @@ public class Helper {
     }
 
 
-
-
-
-
     public ArrayList<Integer> readNumbers(ArrayList<Carte> cards, int length) {
         ArrayList<Integer> flowInterger = new ArrayList<>();
 
@@ -243,7 +247,8 @@ public class Helper {
             Carte carte_m = cards.get((n + 1) % cards.size());
             int m = carte_m.id;
             if (carte_m.isJoker()) {
-                return generateKeyFlow(length, cards);
+                cards = melange(cards);
+                flowInterger.add(readNumbers(cards, 1).get(0));
             }
 
             if (m > NB_ALPHA) {
@@ -255,12 +260,30 @@ public class Helper {
         return flowInterger;
     }
 
-    public boolean verify(ArrayList<Integer> msgInt, ArrayList<Integer> keyflow){
-        for (int i = 0; i < msgInt.size(); i++){
-            if (msgInt.get(i).equals(keyflow.get(i)) && msgInt.get(i) == 26){
+    public boolean verify(ArrayList<Integer> msgInt, ArrayList<Integer> keyflow) {
+        for (int i = 0; i < msgInt.size(); i++) {
+            if (msgInt.get(i).equals(keyflow.get(i)) && msgInt.get(i) == 26) {
                 return false;
             }
         }
         return true;
+    }
+
+
+    public ArrayList<String> messageSplit(String message) {
+        ArrayList<String> msgs = new ArrayList<>();
+        if (message.length() < NB_CARDS) {
+            msgs.add(message);
+            return msgs;
+        } else {
+            for (int i = 0; i < message.length(); i = i + NB_CARDS) {
+                if (message.length() < NB_CARDS + i) {
+                    msgs.add(message.substring(i));
+                } else {
+                    msgs.add(message.substring(i, NB_CARDS + i));
+                }
+            }
+        }
+        return msgs;
     }
 }
