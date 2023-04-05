@@ -2,39 +2,72 @@ package com.chargo;
 
 import com.chargo.helper.*;
 
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
-        for (int i = 0;i<15;i++){
-            encodeDecode();
+        Helper helper = new Helper();
+        String msgToEncode = "bonjouratousjemapellecharlejesuisleplusbeaudetoutlesrebeuxwallah";
+
+        ArrayList<Carte> cards = buildCard(helper);
+
+        ArrayList<String> messagesSplit = helper.messageSplit(msgToEncode);
+
+
+
+
+
+
+       // for (int i = 0;i<15;i++){
+        String decodedmessage = "";
+        for (String message: messagesSplit
+             ) {
+            decodedmessage = decodedmessage+ new String(encodeDecode(message, cards, helper));
+
         }
+
+        System.out.println("messagde decode si ca marche pas jarrete : "+ decodedmessage);
+       // }
+
 
     }
 
-    public static void encodeDecode(){
+    public static ArrayList<Carte> buildCard(Helper helper){
+        ArrayList<Carte> cards = helper.createCardInOrder();
 
-        Helper helper = new Helper(); //ok
-        String msgToEncode = "zcharlesbonjour";
+        Collections.shuffle(cards);
+        return cards;
+    }
+
+
+
+    public static char[] encodeDecode(String msgToEncode, ArrayList<Carte> cards, Helper helper){
+
+
 
 
 
         System.out.println("message to encode : "+ msgToEncode);
 
-        ArrayList<Carte> cards = helper.createCardInOrder();
 
-        Collections.shuffle(cards);
 
         ArrayList<Integer> keyflow = helper.generateKeyFlow(msgToEncode.length(), cards);
 //        System.out.println("keyflow : " + keyflow);
-
         ArrayList<Integer> msgInt = helper.strToInt(msgToEncode.toCharArray());
-        if (!helper.verify(msgInt,keyflow)){
-            encodeDecode();
-            return;
-        }
+
+
+            if (!helper.verify(msgInt,keyflow)){
+                cards = buildCard(helper);
+                encodeDecode(msgToEncode,cards,helper);
+                return null;
+            }
+
+
+
 
 
 
@@ -65,5 +98,9 @@ public class Main {
         System.out.println("message decode en int : " + helper.strToInt(decodedMessage));
         System.out.println("message decode en char : " + Arrays.toString(decodedMessage));
 
+        return decodedMessage;
+
     }
+
+
 }
