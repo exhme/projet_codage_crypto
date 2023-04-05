@@ -1,6 +1,7 @@
 import Enums.CouleurEnum;
 import Enums.FormeEnum;
 import Enums.TeteEnum;
+import com.sun.tools.corba.se.idl.InterfaceGen;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -337,6 +338,15 @@ public class Helper {
             flowInterger.add(m);
         }
         return flowInterger;
+    }
+
+    public boolean verify(ArrayList<Integer> msgInt, ArrayList<Integer> keyflow){
+        for (int i = 0; i < msgInt.size(); i++){
+            if (msgInt.get(i).equals(keyflow.get(i)) && msgInt.get(i) == 26){
+                return false;
+            }
+        }
+        return true;
     }
 
 
