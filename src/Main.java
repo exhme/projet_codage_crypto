@@ -4,7 +4,7 @@ import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
-        for (int i = 0;i<15000;i++){
+        for (int i = 0;i<15;i++){
             encodeDecode();
         }
 
@@ -36,10 +36,18 @@ public class Main {
 
         char[] key = helper.intToCharTab(keyflow);
         char[] encodedMessage  = helper.encode(msgToEncode.toCharArray(),key);
+
+        IOhelper iOhelper = new IOhelper();
+        String filename = iOhelper.exportCardOrder(cards);
 //        System.out.println("message encodé : " + Arrays.toString(encodedMessage));
         System.out.println("message int: " + helper.strToInt(encodedMessage));
+        // import jeu de carte pour la key
+        ArrayList<Carte> cardsImport = iOhelper.importCardOrder(filename);
+        ArrayList<Integer> keyFlowImport = helper.generateKeyFlow(msgToEncode.length(), cardsImport);
+        char[] keyImport = helper.intToCharTab(keyflow);
 
-        char[] decodedMessage = helper.decode(encodedMessage,key);
+
+        char[] decodedMessage = helper.decode(encodedMessage,keyImport);
         System.out.println("--------------------");
         System.out.println("message a encoder : " + Arrays.toString(msgToEncode.toCharArray()));
         System.out.println("key flow char: " + Arrays.toString(key));
