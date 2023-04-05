@@ -1,14 +1,10 @@
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
-import java.lang.reflect.GenericDeclaration;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
-        for (int i = 0;i<1500;i++){
+        for (int i = 0;i<15000;i++){
             encodeDecode();
         }
 
@@ -31,12 +27,12 @@ public class Main {
 //        System.out.println("keyflow : " + keyflow);
 
         ArrayList<Integer> msgInt = helper.strToInt(msgToEncode.toCharArray());
-        for (int i = 0; i < msgInt.size(); i++){
-            if (msgInt.get(i).equals(keyflow.get(i)) && msgInt.get(i) == 26){
-                encodeDecode();
-                return;
-            }
+        if (!helper.verify(msgInt,keyflow)){
+            encodeDecode();
+            return;
         }
+
+
 
         char[] key = helper.intToCharTab(keyflow);
         char[] encodedMessage  = helper.encode(msgToEncode.toCharArray(),key);

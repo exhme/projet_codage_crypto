@@ -339,5 +339,14 @@ public class Helper {
         return flowInterger;
     }
 
+    public boolean verify(ArrayList<Integer> msgInt, ArrayList<Integer> keyflow){
+        for (int i = 0; i < msgInt.size(); i++){
+            if (msgInt.get(i).equals(keyflow.get(i)) && msgInt.get(i) == 26){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }
